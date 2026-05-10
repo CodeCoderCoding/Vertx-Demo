@@ -3,26 +3,27 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.supremepole</groupId>
+        <artifactId>Vertx-Demo</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-    <groupId>com.supremepole</groupId>
-    <artifactId>Vertx-Demo</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>A01-Vertx-HelloWorld</module>
-        <module>A02-Vertx-Web</module>
-        <module>A03-Vertx-Core</module>
-        <module>A04-Vertx-Verticle</module>
-        <module>A05-Vertx-EventBus</module>
-        <module>A06-Vertx-Web-Advanced</module>
-        <module>A07-Vertx-Session-Auth</module>
-        <module>A08-Vertx-Database</module>
-    </modules>
+    <artifactId>A04-Vertx-Verticle</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <vertx.version>5.0.3</vertx.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>${vertx.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
