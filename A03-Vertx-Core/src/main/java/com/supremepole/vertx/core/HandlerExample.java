@@ -4,8 +4,6 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.Message;
-import io.vertx.core.file.AsyncFile;
-import io.vertx.core.file.OpenOptions;
 import io.vertx.core.http.HttpServerRequest;
 
 public class HandlerExample {
@@ -43,7 +41,7 @@ public class HandlerExample {
                     .putHeader("content-type", "text/plain")
                     .end("Hello from " + path);
             })
-            .listen(8081, ar -> {
+            .listen(8081).onComplete(ar -> {
                 if (ar.succeeded()) {
                     System.out.println("HTTP Server started on port 8081");
                 }
@@ -52,7 +50,7 @@ public class HandlerExample {
         // 方法引用写法
         vertx.createHttpServer()
             .requestHandler(HandlerExample::handleRequest)
-            .listen(8082, ar -> {
+            .listen(8082).onComplete(ar -> {
                 if (ar.succeeded()) {
                     System.out.println("HTTP Server (方法引用) started on port 8082");
                 }
@@ -68,8 +66,8 @@ public class HandlerExample {
     private static void asyncResultHandlerExample(Vertx vertx) {
         System.out.println("\n--- 2. AsyncResult Handler ---");
 
-        // 文件读取
-        vertx.fileSystem().readFile("example.txt", ar -> {
+        // 文件读取 - Vertx 5.x 返回 Future
+        vertx.fileSystem().readFile("example.txt").onComplete(ar -> {
             if (ar.succeeded()) {
                 Buffer buffer = ar.result();
                 System.out.println("文件内容长度: " + buffer.length());
@@ -78,8 +76,8 @@ public class HandlerExample {
             }
         });
 
-        // 创建文件
-        vertx.fileSystem().createFile("example.txt", ar -> {
+        // 创建文件 - Vertx 5.x 返回 Future
+        vertx.fileSystem().createFile("example.txt").onComplete(ar -> {
             if (ar.succeeded()) {
                 System.out.println("文件创建成功");
             } else {
@@ -98,8 +96,8 @@ public class HandlerExample {
             message.reply("已收到: " + body);
         });
 
-        // 发送消息并等待回复
-        vertx.eventBus().request("test.topic", "Hello Event Bus", reply -> {
+        // 发送消息并等待回复 - Vertx 5.x 返回 Future
+        vertx.eventBus().request("test.topic", "Hello Event Bus").onComplete(reply -> {
             if (reply.succeeded()) {
                 System.out.println("收到回复: " + reply.result().body());
             } else {

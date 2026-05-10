@@ -38,7 +38,7 @@ public class HandlerPatterns {
         // 使用静态方法引用
         vertx.createHttpServer()
             .requestHandler(StaticHandlers::handleRequest)
-            .listen(8083, ar -> {
+            .listen(8083).onComplete(ar -> {
                 if (ar.succeeded()) {
                     System.out.println("静态方法引用 Server 启动在端口 8083");
                 }
@@ -57,7 +57,7 @@ public class HandlerPatterns {
         // 使用实例方法引用
         vertx.createHttpServer()
             .requestHandler(handler::handle)
-            .listen(8084, ar -> {
+            .listen(8084).onComplete(ar -> {
                 if (ar.succeeded()) {
                     System.out.println("实例方法引用 Server 启动在端口 8084");
                 }

@@ -1,6 +1,8 @@
 package com.supremepole.vertx.core;
 
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -142,7 +144,7 @@ public class AsyncPatterns {
     }
 
     // 旧式回调 API
-    private static void getUserAsync(Vertx vertx, int id, Handler<io.vertx.core.AsyncResult<JsonObject>> callback) {
+    private static void getUserAsync(Vertx vertx, int id, Handler<AsyncResult<JsonObject>> callback) {
         vertx.setTimer(150, timerId -> {
             JsonObject user = new JsonObject()
                 .put("id", id)
@@ -154,7 +156,13 @@ public class AsyncPatterns {
     // 使用 Promise 适配为 Future API
     private static Future<JsonObject> getUserFuture(Vertx vertx, int id) {
         Promise<JsonObject> promise = Promise.promise();
-        getUserAsync(vertx, id, promise); // Promise 实现了 Handler<AsyncResult<T>>
+        getUserAsync(vertx, id, ar -> {
+            if (ar.succeeded()) {
+                promise.complete(ar.result());
+            } else {
+                promise.fail(ar.cause());
+            }
+        });
         return promise.future();
     }
 
@@ -200,9 +208,9 @@ public class AsyncPatterns {
                 // 模拟操作失败
                 return Future.failedFuture("操作失败");
             })
-            .eventually(v -> {
+            .recover(err -> {
                 System.out.println("清理资源");
-                return Future.succeededFuture();
+                return Future.failedFuture(err);
             })
             .onComplete(ar -> {
                 if (ar.succeeded()) {

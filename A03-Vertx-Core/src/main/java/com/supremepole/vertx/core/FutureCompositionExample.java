@@ -60,7 +60,7 @@ public class FutureCompositionExample {
                 if (exists) {
                     return Future.failedFuture("邮箱已被注册");
                 }
-                return hashPassword(password);
+                return hashPassword(vertx, password);
             })
             .compose(hashed -> createUser(vertx, email, hashed))
             .compose(user -> sendWelcomeEmail(vertx, user)
@@ -78,7 +78,7 @@ public class FutureCompositionExample {
         return promise.future();
     }
 
-    private static Future<String> hashPassword(String password) {
+    private static Future<String> hashPassword(Vertx vertx, String password) {
         Promise<String> promise = Promise.promise();
         vertx.setTimer(300, id -> promise.complete("hashed_" + password));
         return promise.future();
